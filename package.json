@@ -27,6 +27,7 @@
     "@sendgrid/mail": "^7.6.0",
     "async-redis": "^2.0.0",
     "async-redis-mock": "^2.0.0",
+    "awilix": "^13.0.5",
     "axios": "^0.25.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
