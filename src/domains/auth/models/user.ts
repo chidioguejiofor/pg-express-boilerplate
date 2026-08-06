@@ -1,72 +1,77 @@
-import {
-  Table,
-  Column,
-  DefaultScope,
-  Scopes,
-  DataType,
-} from "sequelize-typescript";
+import { DataTypes, Optional } from "sequelize";
 import bcrypt from "bcryptjs";
-
-import { BaseModel } from "shared/base-model";
+import { sequelize } from "infrastructure/db";
+import { BaseModel, baseModelAttributes } from "shared/base-model";
 import { UserEntity } from "../entities";
 
-@DefaultScope(() => ({
-  attributes: {
-    exclude: ["password"],
-  },
-}))
-@Scopes(() => ({
-  withPassword: {
-    attributes: {
-      include: ["password"],
-    },
-  },
-}))
-@Table({
-  tableName: "user",
-})
-export class User extends BaseModel<UserEntity> {
-  @Column({
-    allowNull: false,
-    field: "first_name",
-    type: DataType.STRING,
-  })
-  firstName: string;
+type UserCreationAttributes = Optional<
+  UserEntity,
+  "id" | "createdAt" | "updatedAt" | "emailIsVerified"
+>;
 
-  @Column({
-    allowNull: false,
-    field: "last_name",
-    type: DataType.STRING,
-  })
-  lastName: string;
-
-  @Column({
-    allowNull: false,
-    type: DataType.STRING,
-  })
-  email: string;
-
-  @Column({ allowNull: true, type: DataType.STRING })
-  password: string;
-
-  @Column({
-    field: "email_is_verified",
-    defaultValue: false,
-    type: DataType.STRING,
-  })
-  emailIsVerified: boolean;
-
-  @Column({ allowNull: true, type: DataType.STRING })
-  gender: string;
-
-  @Column({ allowNull: true, type: DataType.DATEONLY })
-  dob: Date;
+export class User extends BaseModel<UserEntity, UserCreationAttributes> {
+  declare firstName: string;
+  declare lastName: string;
+  declare email: string;
+  declare password: string;
+  declare emailIsVerified: boolean;
+  declare gender?: string;
+  declare dob?: Date;
 
   static generateHash(password: string) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
   }
 
-  public isPasswordValid(unhashedPassword: string) {
-    return bcrypt.compareSync(unhashedPassword, this.password as string);
+  isPasswordValid(unhashedPassword: string) {
+    return bcrypt.compareSync(unhashedPassword, this.password);
   }
 }
+
+User.init(
+  {
+    ...baseModelAttributes,
+    firstName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      field: "first_name",
+    },
+    lastName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      field: "last_name",
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    emailIsVerified: {
+      type: DataTypes.STRING,
+      defaultValue: false,
+      field: "email_is_verified",
+    },
+    gender: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    dob: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
+  },
+  {
+    sequelize,
+    tableName: "user",
+    defaultScope: {
+      attributes: { exclude: ["password"] },
+    },
+    scopes: {
+      withPassword: {
+        attributes: { include: ["password"] },
+      },
+    },
+  }
+);

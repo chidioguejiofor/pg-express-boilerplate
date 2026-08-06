@@ -1,10 +1,15 @@
-import { Table, Column, Model } from "sequelize-typescript";
+import { DataTypes, Model } from "sequelize";
+import { sequelize } from "infrastructure/db";
 
-@Table
 export class ExampleModel extends Model {
-  @Column
-  name: string;
-
-  @Column
-  birthday: Date;
+  declare name: string;
+  declare birthday: Date;
 }
+
+ExampleModel.init(
+  {
+    name: { type: DataTypes.STRING },
+    birthday: { type: DataTypes.DATE },
+  },
+  { sequelize }
+);

@@ -77,3 +77,14 @@ resolves because `tokenManager` is the exact key registered in
 `domains/auth/clients/index.ts`. A mismatched name fails at resolve time, not
 compile time, so this is the one place in the codebase where a rename needs a
 manual double-check across both sides.
+
+### A note on the existing tests
+
+The tests currently in this repo (e.g. under `domains/auth/usecases/__tests__`)
+should be treated as **examples of the testing pattern**, not as a fixed contract.
+They cover a generic, illustrative OAuth login flow, and we expect their specifics
+- what they assert, what fixtures they use, even which usecase behaviors exist at
+all - to change significantly as this boilerplate gets adapted for a real project.
+Copy the *shape* (unit tests constructing a usecase directly with stubbed
+dependencies; `parameterized` for repeating a case across inputs; global test env
+defaults set in `src/__tests__/fixtures.ts`), not the specific assertions.

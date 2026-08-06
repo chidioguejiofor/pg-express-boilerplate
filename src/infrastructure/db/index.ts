@@ -1,9 +1,10 @@
-import { Sequelize } from "sequelize-typescript";
+import { Sequelize } from "sequelize";
 import { SEQUELIZE_CONFIG } from "../settings";
-import { combinedModels } from "./combined-models";
 
+// Plain sequelize has no "models" registration array like sequelize-typescript
+// did - each model self-registers by calling Model.init({...}, { sequelize })
+// in its own file, triggered whenever something imports that model.
 export const sequelize = new Sequelize({
   ...SEQUELIZE_CONFIG,
   dialect: "postgres",
-  models: combinedModels, // or [Player, Team],
 });

@@ -1,14 +1,17 @@
-import asyncRedis from "async-redis";
+import { createClient as createRedisClient } from "redis";
 import redisMock from "async-redis-mock";
 import { REDIS_URL } from "infrastructure/settings";
 import { createLogger } from "shared/utils";
 
-const createClient = (options: unknown) => {
+type RedisConfig = {
+  url: string;
+};
+const createClient = (options: RedisConfig) => {
   if (process.env.NODE_ENV == "test") {
     return redisMock.createClient(options);
   }
 
-  return (asyncRedis as any).createClient(options);
+  return createRedisClient(options);
 };
 
 export const REDIS_CLIENT = createClient({
@@ -21,7 +24,7 @@ export class CacheService {
   static cacheData(
     key: string,
     data: Record<string, unknown>,
-    expireTime: number = 60 * 60 * 24
+    expireTime: number = 60 * 60 * 24,
   ) {
     REDIS_CLIENT.set(key, JSON.stringify(data));
     REDIS_CLIENT.expire(key, expireTime);
@@ -32,7 +35,7 @@ export class CacheService {
   }
 
   static async retrieveKey<Data = object>(
-    key: string
+    key: string,
   ): Promise<Record<string, Data | any> | null> {
     try {
       logger.info(`Retriving key "${key}"`);
