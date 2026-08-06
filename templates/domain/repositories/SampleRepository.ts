@@ -1,5 +1,5 @@
 import { asValue } from "awilix";
-import { container } from "infrastructure/container";
+import { container } from "../container";
 
 export class SampleRepository {
   getSampleData() {

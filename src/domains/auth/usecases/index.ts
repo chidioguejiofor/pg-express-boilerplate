@@ -1,8 +1,8 @@
 import { asClass } from "awilix";
 import { LoginUserUsecase } from "./login-user";
 import { AuthMiddlewareUsecase } from "./auth-middleware";
-import { container } from "infrastructure/container";
-import "clients"; // ensures tokenManager is registered before we resolve below
+import { container } from "../container";
+import "../clients"; // ensures tokenManager is registered before we resolve below
 
 container.register({
   loginUserUsecase: asClass(LoginUserUsecase),
