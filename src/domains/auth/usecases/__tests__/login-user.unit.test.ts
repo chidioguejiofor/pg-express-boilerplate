@@ -7,7 +7,6 @@ import { LoginUserUsecase } from "../login-user";
 const loginUserUsecase = new LoginUserUsecase(tokenManagerStub);
 
 const validInput = {
-  host: "localhost:3000",
   idToken: "some_token",
   network: "google" as const,
 };
@@ -67,7 +66,6 @@ describe("LoginUserUsecase", () => {
       ).to.eventually.eqls({
         user: {
           email: validDecodedGooogleToken.email,
-          host: "localhost:3000",
         },
         token: mockToken,
       });
@@ -132,22 +130,4 @@ describe("LoginUserUsecase", () => {
     }
   );
 
-  parameterized(
-    "should generate a token using host name in client config user logs in with",
-    ["google", "microsoft"],
-    async (network) => {
-      const mockToken = "dummy_token";
-      tokenManagerStub.validateToken.returns(validDecodedToken[network]);
-      tokenManagerStub.generateToken.returns(Promise.resolve(mockToken));
-      await loginUserUsecase.execute({ ...validInput, network });
-
-      tokenManagerStub.generateToken.should.have.been.calledOnceWith(
-        "randomeKey1",
-        {
-          email: validDecodedToken[network].email,
-          host: "localhost:3000",
-        }
-      );
-    }
-  );
 });

@@ -3,8 +3,7 @@ import { getSampleDataUsecase } from "../usecases";
 
 export class SampleController {
   static async getSampleData(req: Request, res: Response) {
-    const data: string = req.body;
-    const resData = await getSampleDataUsecase.execute(data);
+    const resData = await getSampleDataUsecase.execute();
 
     return res.status(200).json(resData);
   }

@@ -1,15 +1,9 @@
-import { SampleRepositoryType } from "../types";
+import { SampleRepository } from "../repositories";
 
 export class SampleGetDataUsecase {
-  private dependencyOne: any;
-  private sampleRepository: SampleRepositoryType;
-  constructor(dependencyOne: any, sampleRepository: SampleRepositoryType) {
-    this.dependencyOne = dependencyOne;
-    this.sampleRepository = sampleRepository;
-  }
+  constructor(private sampleRepository: SampleRepository) {}
 
-  async execute(data: string) {
-    this.dependencyOne(data);
+  async execute() {
     return this.sampleRepository.getSampleData();
   }
 }

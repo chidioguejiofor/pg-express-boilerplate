@@ -26,7 +26,7 @@ export class AuthMiddlewareUsecase {
   private async decodeToken(token: any) {
     const decoded: any = await this.tokenManager.decode(token);
 
-    if (!decoded?.host || !decoded?.email) throw new InvalidToken();
+    if (!decoded?.email) throw new InvalidToken();
 
     return decoded;
   }

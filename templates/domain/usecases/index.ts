@@ -1,7 +1,12 @@
+import { asClass } from "awilix";
 import { SampleGetDataUsecase } from "./GetSampleDataUsecase";
-import { sampleRepository } from "../repositories";
+import { container } from "../container";
+import "../repositories"; // ensures sampleRepository is registered before we resolve below
 
-export const getSampleDataUsecase = new SampleGetDataUsecase(
-  console.log,
-  sampleRepository
+container.register({
+  getSampleDataUsecase: asClass(SampleGetDataUsecase),
+});
+
+export const getSampleDataUsecase = container.resolve<SampleGetDataUsecase>(
+  "getSampleDataUsecase"
 );
